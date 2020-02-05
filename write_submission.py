@@ -1,6 +1,5 @@
 import csv
 
-
 from models.graph_baseline import GraphBaseline as Model
 # from models.text_baseline import TextBaseline as Model
 from utils.utils import get_data_full
