@@ -31,16 +31,6 @@ class GraphBaseline(BaseEstimator):
         self.classes_ = self.clf.classes_
         return res
 
-    def predict(self, X_test):
-        test_hosts = [u[0] for u in X_test]
-        X_test_graph = np.zeros((len(test_hosts), 3))
-        avg_neig_deg = nx.average_neighbor_degree(self.G, nodes=test_hosts)
-        for i in range(len(test_hosts)):
-            X_test_graph[i, 0] = self.G.in_degree(test_hosts[i])
-            X_test_graph[i, 1] = self.G.out_degree(test_hosts[i])
-            X_test_graph[i, 2] = avg_neig_deg[test_hosts[i]]
-        return self.clf.predict(X_test_graph)
-
     def predict_proba(self, X_test):
         test_hosts = [u[0] for u in X_test]
         X_test_graph = np.zeros((len(test_hosts), 3))
