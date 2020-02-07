@@ -4,11 +4,13 @@ from sklearn.model_selection import train_test_split
 
 # from models.graph_baseline import GraphBaseline as Model
 # from models.text_baseline import TextBaseline as Model
-from models.combined import CombinedBaseline as Model
+from models.doc_embedding.model import DocEmbeddingModel as Model
+# from models.combined import CombinedBaseline as Model
 
 from utils.utils import get_data_train
 
 X_all, y_all = get_data_train()
+print('Data loaded...')
 model = Model()
 
 def custom_cross_val(model, X_all, y_all):
