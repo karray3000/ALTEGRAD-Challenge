@@ -3,7 +3,6 @@ import codecs
 import os
 from os import path
 
-
 def get_data_train():
     with open("./data/train.csv", 'r') as f:
         train_data = f.read().splitlines()
