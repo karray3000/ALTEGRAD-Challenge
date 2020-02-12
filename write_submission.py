@@ -2,7 +2,7 @@ import csv
 
 from models.graph_baseline import GraphBaseline as Model
 # from models.text_baseline import TextBaseline as Model
-from utils.utils import get_data_full
+from utils.read_data import get_data_full
 
 labels = ['business/finance', 'education/research', 'entertainment', 'health/medical',
           'news/press', 'politics/government/law', 'sports', 'tech/science']
