@@ -78,8 +78,8 @@ def full_preprocessing(df, filename):
         text = df["text"]
         text = text.map(strip_tags_and_uris)
         text = text.map(clean)
-        text = text.map(remove_stopwords)
         text = text.map(remove_non_alpha)
+        text = text.map(remove_stopwords)
         text = text.map(lemmatize)
         df["text"] = text
         df.to_csv(filename)

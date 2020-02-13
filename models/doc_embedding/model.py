@@ -19,7 +19,7 @@ class DocEmbeddingModel(BaseEstimator):
     def __init__(self, **params):
         self.G = nx.read_weighted_edgelist('./data/edgelist.txt', create_using=nx.DiGraph())
         self.shortest_paths = get_shortest_paths()
-        self.embed = pickle.load(open('models/doc_embedding/doc_embeds.pkl', 'rb'))
+        self.embed = pickle.load(open('models/doc_embedding/doc_embeds_lem.pkl', 'rb'))
         self.train_hosts_with_labels = dict()
         # self.clf = StackingClassifier([
         #     ('rf', RandomForestClassifier(n_estimators=20, max_depth=5)),
@@ -29,9 +29,9 @@ class DocEmbeddingModel(BaseEstimator):
         # ])
         # self.clf = LGBMClassifier(max_depth=7, num_leaves=32,
         #                           learning_rate=0.1, reg_lambda=10, reg_alpha=10)
-        self.clf = MLPClassifier(hidden_layer_sizes=(20,), max_iter=500)
+        self.clf = MLPClassifier(hidden_layer_sizes=(20,), max_iter=2000)
         self.full = Pipeline(steps=[
-            ('ss', StandardScaler()),
+            # ('ss', StandardScaler()),
             # ('pca', PCA(50)),
             ('clf', self.clf),
         ])
@@ -50,7 +50,7 @@ class DocEmbeddingModel(BaseEstimator):
                 X_train_graph[i, j] = np.max(shortest_paths)
                 X_train_graph[i, 8 + j] = np.mean(shortest_paths)
 
-        X_train_text = [self.embed[host] for host in train_hosts]
+        X_train_text = [self.embed[int(host)] for host in train_hosts]
         X_train_combined = np.concatenate((X_train_graph, X_train_text), axis=1)
 
         res = self.full.fit(X_train_combined, y_train)
@@ -72,6 +72,6 @@ class DocEmbeddingModel(BaseEstimator):
                 X_test_graph[i, j] = np.max(shortest_paths)
                 X_test_graph[i, 8 + j] = np.mean(shortest_paths)
 
-        X_test_text = [self.embed[host] for host in test_hosts]
+        X_test_text = [self.embed[int(host)] for host in test_hosts]
         X_test_combined = np.c_[X_test_graph, X_test_text]
         return self.full.predict_proba(X_test_combined)
