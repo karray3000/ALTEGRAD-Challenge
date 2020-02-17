@@ -26,3 +26,4 @@ def custom_cross_val(model, X_all, y_all):
 train_score, test_score = custom_cross_val(model, X_all, y_all)
 print(f'Cross val scores for train: mean {np.mean(train_score):06} - std {np.std(train_score):06}')
 print(f'Cross val scores for test : mean {np.mean(test_score):06} - std {np.std(test_score):06}')
+

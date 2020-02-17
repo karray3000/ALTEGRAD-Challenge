@@ -2,15 +2,19 @@ import networkx as nx
 import codecs
 import os
 from os import path
+import pandas as pd
 
 def get_data_train(data_path='./data/'):
-    with open(path.join(data_path, "train.csv"), 'r') as f:
-        train_data = f.read().splitlines()
+    # with open(path.join(data_path, "train.csv"), 'r') as f:
+    #     train_data = f.read().splitlines()
+    train_data = pd.read_csv(path.join(data_path, "train.csv"), names=['host', 'label'],  header=0).drop_duplicates(subset='host')
 
     train_hosts = list()
     y_train = list()
-    for row in train_data:
-        host, label = row.split(",")
+    for row in train_data.iterrows():
+        host, label = str(row[1]['host']), row[1]['label']
+
+        # host, label = row.split(",")
         train_hosts.append(host)
         y_train.append(label.lower())
 
@@ -40,15 +44,17 @@ def get_data_train(data_path='./data/'):
 
 
 def get_data_full(data_path='./data/'):
-    with open(path.join(data_path, "train.csv"), 'r') as f:
-        train_data = f.read().splitlines()
+    # with open(path.join(data_path, "train.csv"), 'r') as f:
+    #     train_data = f.read().splitlines()
+    train_data = pd.read_csv(path.join(data_path, "train.csv"), names=['host', 'label'],  header=0).drop_duplicates(subset='host')
     with open(path.join(data_path, "test.csv"), 'r') as f:
         test_hosts = f.read().splitlines()
 
     train_hosts = list()
     y_train = list()
-    for row in train_data:
-        host, label = row.split(",")
+    for row in train_data.iterrows():
+        # host, label = row.split(",")
+        host, label = str(row[1]['host']), row[1]['label']
         train_hosts.append(host)
         y_train.append(label.lower())
 

@@ -3,6 +3,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier, StackingClassifier
 from sklearn.decomposition import PCA
 from lightgbm import LGBMClassifier
+from xgboost import XGBClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import StandardScaler
@@ -29,7 +30,8 @@ class DocEmbeddingModel(BaseEstimator):
         # ])
         # self.clf = LGBMClassifier(max_depth=7, num_leaves=32,
         #                           learning_rate=0.1, reg_lambda=10, reg_alpha=10)
-        self.clf = MLPClassifier(hidden_layer_sizes=(20,), max_iter=2000)
+        # self.clf = MLPClassifier(hidden_layer_sizes=(20,), max_iter=2000,)
+        self.clf = XGBClassifier()
         self.full = Pipeline(steps=[
             # ('ss', StandardScaler()),
             # ('pca', PCA(50)),

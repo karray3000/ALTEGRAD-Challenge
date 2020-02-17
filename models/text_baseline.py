@@ -9,7 +9,7 @@ labels = ['business/finance', 'education/research', 'entertainment', 'health/med
 class TextBaseline(BaseEstimator):
     def __init__(self):
         self.vec = TfidfVectorizer(decode_error='ignore', strip_accents='unicode', encoding='latin-1', min_df=10, max_df=1000, max_features=1000)
-        self.clf = LogisticRegression(solver='lbfgs', multi_class='auto', max_iter=1000)
+        self.clf = LogisticRegression(solver='lbfgs', multi_class='auto', max_iter=1000, class_weight='balanced')
 
     def fit(self, X_train, y_train):
         train_data = [u[1] for u in X_train]
