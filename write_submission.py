@@ -2,6 +2,8 @@ import csv
 
 from models.graph_baseline import GraphBaseline as Model
 # from models.text_baseline import TextBaseline as Model
+from models.doc_embedding.model import DocEmbeddingModel as Model
+
 from utils.read_data import get_data_full
 
 labels = ['business/finance', 'education/research', 'entertainment', 'health/medical',

@@ -4,6 +4,7 @@ from sklearn.ensemble import RandomForestClassifier, StackingClassifier
 from sklearn.decomposition import PCA
 from lightgbm import LGBMClassifier
 from xgboost import XGBClassifier
+from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import StandardScaler
@@ -20,6 +21,7 @@ class DocEmbeddingModel(BaseEstimator):
     def __init__(self, **params):
         self.G = nx.read_weighted_edgelist('./data/edgelist.txt', create_using=nx.DiGraph())
         self.shortest_paths = get_shortest_paths()
+        # self.embed = pickle.load(open('models/doc_embedding/doc_embeds.pkl', 'rb'))
         self.embed = pickle.load(open('models/doc_embedding/doc_embeds_lem.pkl', 'rb'))
         self.train_hosts_with_labels = dict()
         # self.clf = StackingClassifier([
@@ -28,10 +30,14 @@ class DocEmbeddingModel(BaseEstimator):
         #                             learning_rate=0.1, reg_lambda=10)),
         #     ('mlp', MLPClassifier(hidden_layer_sizes=(50), max_iter=2000))
         # ])
-        # self.clf = LGBMClassifier(max_depth=7, num_leaves=32,
+        # self.clf = LGBMClassifier(class_weight='balanced', max_depth=7, num_leaves=32,
         #                           learning_rate=0.1, reg_lambda=10, reg_alpha=10)
-        # self.clf = MLPClassifier(hidden_layer_sizes=(20,), max_iter=2000,)
-        self.clf = XGBClassifier()
+        # self.clf = MLPClassifier(class_weight='balanced', hidden_layer_sizes=(20,), max_iter=2000,)
+        self.clf = XGBClassifier(max_depth=4, n_estimators=50)
+        # self.clf = SVC(probability=True, class_weight='balanced')
+        # self.clf = StackingClassifier(estimators=[(str(i), self.clf) for i in range(5)])
+
+        self.pca = PCA(128)
         self.full = Pipeline(steps=[
             # ('ss', StandardScaler()),
             # ('pca', PCA(50)),
@@ -53,6 +59,7 @@ class DocEmbeddingModel(BaseEstimator):
                 X_train_graph[i, 8 + j] = np.mean(shortest_paths)
 
         X_train_text = [self.embed[int(host)] for host in train_hosts]
+        X_train_text = self.pca.fit_transform(X_train_text)
         X_train_combined = np.concatenate((X_train_graph, X_train_text), axis=1)
 
         res = self.full.fit(X_train_combined, y_train)
@@ -75,5 +82,7 @@ class DocEmbeddingModel(BaseEstimator):
                 X_test_graph[i, 8 + j] = np.mean(shortest_paths)
 
         X_test_text = [self.embed[int(host)] for host in test_hosts]
+        X_test_text = self.pca.transform(X_test_text)
+
         X_test_combined = np.c_[X_test_graph, X_test_text]
         return self.full.predict_proba(X_test_combined)
