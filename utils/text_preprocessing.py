@@ -63,7 +63,7 @@ def remove_non_alpha(x):
     filtered_words = [word for word in x.split() if word.isalpha()]
     return " ".join(filtered_words)
 
-nlp = spacy.load('fr', disable=['parser', 'ner'])
+nlp = spacy.load('fr_core_news_sm', disable=['parser', 'ner'])
 nlp.max_length = 10000000
 lemmas_to_keep = ['NOUN', 'PROPN', 'VERB', 'ADJ']
 def lemmatize(x):
@@ -105,18 +105,23 @@ def full_preprocessing(df, filename):
         df['users_tagged']= text.map(user_tag)
         df['numeric'] = text.map(numeric_count)
         df['emojis']=text.map(count_emoji)
+        
+       
 
         text = text.map(strip_tags_and_uris)
         text = text.map(clean)
         text = text.map(remove_non_alpha)
         text = text.map(remove_stopwords)
         text = text.map(lemmatize)
+        
+        df['length_of_doc'] = text.map(length_doc)
+        idx=np.where(df['length_of_doc']==0)
+        df=df.drop(df.index[idx])
+        text = df["text"]
+        df['avg_word_length']=text.map(avg_word_length)
         df["text"] = text
         
-        df['length of doc'] = text.map(length_doc)
-        idx=np.where(df['length of doc']==0)
-        df=df.drop(df.index[idx])
-        df['avg word length']=text.map(avg_word_length)
+     
         
         df.to_csv(filename)
     return df
