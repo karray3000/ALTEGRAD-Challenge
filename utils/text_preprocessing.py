@@ -63,7 +63,9 @@ def remove_non_alpha(x):
     filtered_words = [word for word in x.split() if word.isalpha()]
     return " ".join(filtered_words)
 
-nlp = spacy.load('fr_core_news_sm', disable=['parser', 'ner'])
+# nlp = spacy.load('fr_core_news_sm', disable=['parser', 'ner'])
+nlp = spacy.load('fr', disable=['parser', 'ner'])
+
 nlp.max_length = 10000000
 lemmas_to_keep = ['NOUN', 'PROPN', 'VERB', 'ADJ']
 def lemmatize(x):
@@ -125,3 +127,11 @@ def full_preprocessing(df, filename):
         
         df.to_csv(filename)
     return df
+
+def preprocessing_except_lemm(text):
+    text = strip_tags_and_uris(text)
+    text = clean(text)
+    text = remove_non_alpha(text)
+    text = remove_stopwords(text)
+    text = lemmatize(text)
+    return text
