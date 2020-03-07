@@ -2,10 +2,10 @@ import numpy as np
 from sklearn.metrics import log_loss
 from sklearn.model_selection import train_test_split
 
-# from models.graph_baseline import GraphBaseline as Model
-# from models.text_baseline import TextBaseline as Model
+
 from models.doc_embedding.model import DocEmbeddingModel as Model
-# from models.combined import CombinedBaseline as Model
+from models.deep.cnn import CNNModel as Model
+from models.deep.camembert import CamembertModel as Model
 
 from utils.read_data import get_data_train
 
